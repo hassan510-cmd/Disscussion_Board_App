@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{%block title%}login{%endblock%}
+{%block body%}
+<body class="container p-3 mb-3">
+<h1 style="font-family: Candara;text-align: center">Log in</h1>
+<form method="post"  novalidate>
+    {%csrf_token%}
+    {%include 'include/base_form.html'%}
+<!--    <div class="p-2 mb-2   container my-4   text-center  rounded ">-->
+<!--        <input class="form-control" type="text" placeholder="username" name="username">-->
+<!--    </div>-->
+<!--        <div class="p-2 mb-2   container my-4   text-center  rounded ">-->
+<!--        <input class="form-control" type="text" placeholder="password" name="passwd">-->
+<!--    </div>-->
+        <div class="p-2 mb-2   container my-4   text-center  rounded ">
+        <button type="submit" class="btn btn-primary">Login</button>
+            <a href="{%url 'signup'%}">
+                <button type="button" class="btn btn-secondary">create new account ?</button>
+            </a>
+
+        </div>
+</form>
+<span style="text-align: center;color: crimson">
+    <p>{{message}}</p>
+</span>
+</body>
+{%endblock%}

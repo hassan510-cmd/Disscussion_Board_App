@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{%block title%}Board{%endblock%}
+{%block body%}
+<body class="container">
+<div class="p-2 mb-2 bg-warning
+  container my-4   text-center shadow  rounded ">
+    <a href="{%url 'home'%}" class="text-black text-decoration-none">Boards</a> > {{data.name}}
+<!--{{data.description}}-->
+
+</div>
+{%if topics|length >= 1 %}
+
+<table  class="table table-hover shadow p-3 mb-5 bg-body rounded">
+    <thead>
+        <th>Topic name</th>
+        <th># of posts</th>
+          <th>Views</th>
+
+        <th>creator</th>
+        <th>creation-date</th>
+
+    </thead>
+
+            {%for topic in topics%}
+                 <tr>
+                <td><a href="{%url 'topic_page' data.id topic.id%}">{{topic.subject}}</a> </td>
+                 <td> {{topic.posts.all|length}} </td>
+                 <td> 0 </td>
+                <td> {{topic.created_by}} </td>
+                <td> {{topic.created_date}}</td>
+
+            {%endfor%}
+                </tr>
+
+</table>
+{%else%}
+<p>there is no topic here</p>
+
+{%endif%}
+<button class="btn btn-dark"><a href="{%url 'new_topic' data.id%}" class="text-white text-decoration-none"> add new topic +</a></button>
+</body>
+{%endblock%}
+</html>

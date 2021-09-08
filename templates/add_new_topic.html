@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{%block title%}new board{%endblock%}
+
+<html>
+
+{%block body%}
+<body class="container">
+
+<div class="p-2 mb-2 bg-warning  container my-4   text-center shadow  rounded ">
+    <a href="{%url 'home'%}" class="text-black">Boards</a>
+    ><a href="{%url 'topics' data.id%}"> {{data.name}}</a> > new
+</div>
+<form method="post">
+    {%csrf_token%}
+    <div class="form-group">
+    <input type="text" placeholder="Enter your topic name" class="form-control" name="subject">
+    </div>
+    <div class="form-group">
+    <textarea name="msg"  cols="30" rows="5" placeholder="your first post" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">add topic</button>
+</form>
+<table  class="table table-hover shadow p-3 mb-5 bg-body rounded">
+    <thead>
+        <th>
+            Topic name
+        </th>
+        <th>Created by</th>
+        <th>Creation date</th>
+
+    </thead>
+
+            {%for topic in topics%}
+                 <tr>
+                <td><a href="{%url 'topic_page' data.id topic.id%}">{{topic.subject}}</a> </td>
+                <td> {{topic.created_by}} </td>
+                <td> {{topic.created_date}}</td>
+
+            {%endfor%}
+                </tr>
+
+</table>
+
+</body>
+{%endblock%}
+
+</html>
