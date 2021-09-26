@@ -1,16 +1,36 @@
 {% extends 'base.html' %}
+{% load static %}
+
 
 {%block title%}Boards | {{data.name}}{%endblock%}
+{% block headb %}
+<link rel="stylesheet" href="{%static 'css/topic_posts.css'%}">
+{% endblock %}
 <html>
 {%block body%}
 <body class="container">
 
-<div class="p-2 mb-2 bg-warning
+<div  class="p-2 mb-2 bg-warning
   container my-4   text-center shadow  rounded ">
-    <a href="{%url 'home'%}" class="text-black text-decoration-none">Boards</a> > <a href="{%url 'topics' data.id%}">{{data.name}}</a>
+    <a href="{%url 'home'%}" class="text-black text-decoration-none">Boards</a>
+    >
+    <a href="{%url 'topics' data.id%}">{{data.name}}</a>
+    >
+     {{ topic_name }}
 <!--{{data.description}}-->
 
 </div>
+{# the foloowing div has being hidden from css stylesheet "topic_posts.css"#}
+<div id="comment-popup"      class="p-2 mb-2
+  container my-4   text-center shadow  rounded ">
+    say your comment
+    <input type="text" class="form-control">
+    <div style="display: flex">
+    <button style="margin-right: 20px;" class="btn btn-success" >comment</button>
+    <button class="btn btn-danger">cancle</button>
+    </div>
+</div>
+
 <div>
     <form method="post">
         {%csrf_token%}
@@ -20,30 +40,66 @@
 
         <div>
             <br>
-        <input type="submit" class="btn btn-primary" value="add post">
+        <input type="submit" class="btn btn-dark" value="add post +">
         </div>
     </form>
 </div>
-{%for post_o in post%}
-<div class="p-2  shadow  rounded container my-4">
-    <div  style="word-wrap: break-word;">{{post_o.msg}}</div>
-      <div class="text-muted" style="margin-top: 10px ; display: inline">
-          created-at : {{post_o.created_date}} author : {{post_o.created_by}}
-        <a href="{% url 'del_post' post_o.id %}" style="text-decoration: none">
-            <button class="btn btn-danger" style="float:right;margin-top: -15px">
-                Delete
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-</svg>
-            </button>
-        </a>
-  </div>
-</div>
-<i class="bi bi-trash"></i>
-<!--    <p class="text-muted">created at :  {{post_o.created_date}}</p>-->
 
-{%endfor%}
+<div >
+    {%for post_o in post%}
+    <div id="post_content" class=" p-2  shadow  rounded container my-4">
+{#-----------------------------------------------------------------------#}
+        <div id="pic_name" >
+            <img src="{% static 'img/user.png'%}" alt="" >
+            <small class="text-muted">
+            {{post_o.created_by}}
+            </small>
+        </div>
+{#----------------------------------------------------------------------#}
+        <div  style="word-wrap: break-word;">
+            {{post_o.msg}}
+
+        </div>
+{#-----------------------------------------------------------------------#}
+        <div id="post" class="text-muted" >
+            created-at : {{post_o.created_date}}
+            {#-----------------------------------------------------------------------#}
+            <div id="post_actions">
+
+                {% if post_o.created_by == user %}
+                    <a href="{% url 'del_post' post_o.id %}" style="text-decoration: none" class="btn btn-danger">
+
+                            Delete
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" >
+                              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                              <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                            </svg>
+
+                    </a>
+                <a  id="edit_post" href="#" class="btn btn-primary" >
+                        Edit
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" >
+                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                    </svg>
+                </a>
+                {% endif %}
+              <a href="#" id="comment" class="btn btn-success">
+                  comment
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-right-text" >
+                    <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1H2zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12z"/>
+                    <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6zm0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z"/>
+                </svg>
+              </a>
+            </div>
+            {#-----------------------------------------------------------------------#}
+        </div>
+    {#-----------------------------------------------------------------------#}
+    </div>
+    <!--    <p class="text-muted">created at :  {{post_o.created_date}}</p>-->
+    {%endfor%}
+</div>
+<a id="up_btn" href="#" class="btn  btn-dark  "> ^ </a>
 </body>
 {%endblock%}
 </html>

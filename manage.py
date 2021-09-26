@@ -76,3 +76,9 @@ if __name__ == '__main__':
 # t=Topic.objects.get(pk=2)
 # t.posts.all()
 # Post.objects.create()
+topics = Topic.objects.filter(board=2).order_by('-created_date')
+topics[0].posts.all().count()
+res=topics.annotate(co=Count('posts'))[0].co
+res
+for r in res :
+    print(r.co)

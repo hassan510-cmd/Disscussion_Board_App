@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from boards.models import Board ,Topic,Post
 from django.contrib.auth.models import User
 from .froms import AddNewBoard
+from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -12,59 +13,38 @@ last_user = User.objects.last()
 
 @login_required
 def home_page(request):
-	# if request.user.is_anonymous:
+	data=Board.get_all_boards()
+
+	# posts_number=[]
+	# last_post_date=[]
+	# for bord in data:
 	#
-	# 	print(request.user.is_authenticated)
-	# 	# return render(request,'login-page.html',{"message":"طيزك حمرا"})
-	# 	return redirect('logout_page')
-	print(request.user.is_authenticated)
-	data=Board.objects.all().order_by("-id")
-
-	posts_number=[]
-	last_post_date=[]
-	# print("enter method ")
-	for bord in data:
-		# print(bord.topics.all())
-		# for topic in bord.topics.all():
-		# 	posts_number.append(len(topic.posts.all()))
-		# 	if topic.posts.last():
-		#
-		# 		last_post_date.append(topic.posts.last().created_date.strftime("%Y %m %d %I:%M:%S %p"))
-		# 	else:
-		# 		last_post_date.append("-")
-
-		last_post_date=[topic.posts.last().created_date.strftime("%Y %m %d %I:%M:%S %p") if topic.posts.last() else "-" for topic in bord.topics.all()]
-		posts_number=[len(x.posts.all()) for x in bord.topics.all()]
-	last_topic_date = ["-" if str(x.topics.last())=='None' else x.topics.last().created_date.strftime("%Y %m %d %I:%M:%S %p") for x in data]
+	# 	last_post_date=[topic.posts.last().created_date.strftime("%Y %m %d %I:%M:%S %p") if topic.posts.last() else "-" for topic in bord.topics.all()]
+		# posts_number=[len(x.posts.all()) for x in bord.topics.all()]
+		# posts_number.append(Post.objects.filter(topic__board=bord).count())
+		# print(posts_number)
+	# last_topic_date = ["-" if str(x.topics.last())=='None' else x.topics.last().created_date.strftime("%Y %m %d %I:%M:%S %p") for x in data]
 	# print(last_topic_date)
 	if request.method=='POST':
-		# board_name = request.POST['board_name']
-		# board_desc = request.POST['desc']
-		# Board.objects.create(name=board_name,description=board_desc)
 		form=AddNewBoard(request.POST)
 		if form.is_valid():
 			board=form.save(commit=False)
-		# Board.objects.create(name=form.cleaned_data.get('name'),
-		#                      description=form.cleaned_data.get('description')
-		#                      )
 			board.name=form.cleaned_data.get('name')
 			board.description=form.cleaned_data.get('description')
 			board.save()
-			# print(request.body)
 			form = AddNewBoard()
-			# print(form.cleaned_data.get('name'))
 	else:
 		form = AddNewBoard()
-	data = Board.objects.all().order_by("-id")
+	data = Board.get_all_boards()
 	return render(
 		request,"home_page.html",
 		{
 			'data':data,
-			'last_topic_date':last_topic_date,
-			'last_post_date':last_post_date,
-			'post_num':posts_number,
+			# 'last_topic_date':last_topic_date,
+			# 'last_post_date':last_post_date,
+			# 'post_num':posts_number,
 			'form':form,
-			'user':str(request.user).title()
+			'user':request.user
 
 		}
 	)
@@ -73,7 +53,8 @@ def home_page(request):
 def topic_page(request,board_id):
 	try:
 		data=Board.objects.get(pk=board_id)
-		topics = Topic.objects.filter(board=data.id).order_by('-created_date')
+		topics = Topic.objects.filter(board=data.id).order_by('-created_date').annotate(posts_num=Count('posts'))
+
 		# print(f"{request.path}".center("#", 50))
 		# print(*dir(request),sep="\n")
 	except Exception:
@@ -107,6 +88,7 @@ def post_page(request,board_id,topic_id):
 		# print("****************************")
 		data = Board.objects.get(pk=board_id)
 		post=Post.objects.filter(topic=topic_id).order_by("-id")
+		topic_name=Topic.objects.get(pk=topic_id).subject
 		print(f"{request.path}")
 		# print("****************************")
 		if request.method=='POST' and request.POST['post-content']!="":
@@ -121,24 +103,23 @@ def post_page(request,board_id,topic_id):
 		return render(request,'404.html')
 	return render(request,'topic_posts.html',
 	              {
-		              'data':data,
-		              'post':post,
-		              'board_id':board_id,
-		              'topic_id':topic_id,
-
-
+		            'data':data,
+		            'post':post,
+		            'board_id':board_id,
+		            'topic_id':topic_id,
+					"topic_name":topic_name
 	              }
 	              )
 
 @login_required
 def delete_post(request,post_id):
-	print(*dir(request),sep='\n')
+	# print(*dir(request),sep='\n')
 	post=Post.objects.get(id=post_id)
 	topic_id=Topic.objects.get(posts=post).id
 	board_id=Board.objects.get(topics=topic_id).id
 
 	post.delete()
-	print(f'this is the id{post_id}\n topic_id{topic_id}\n board_id{board_id}')
+	# print(f'this is the id{post_id}\n topic_id{topic_id}\n board_id{board_id}')
 	# print(f"{request.path}".center("#",50))
 	return  post_page(request,board_id,topic_id)
 

@@ -3,6 +3,7 @@
 {%block title%}Board{%endblock%}
 {%block body%}
 <body class="container">
+
 <div class="p-2 mb-2 bg-warning
   container my-4   text-center shadow  rounded ">
     <a href="{%url 'home'%}" class="text-black text-decoration-none">Boards</a> > {{data.name}}
@@ -25,7 +26,8 @@
             {%for topic in topics%}
                  <tr>
                 <td><a href="{%url 'topic_page' data.id topic.id%}">{{topic.subject}}</a> </td>
-                 <td> {{topic.posts.all|length}} </td>
+{#                 <td> {{topic.posts.all|length}} </td>#}
+                 <td> {{topic.posts_num}} </td>
                  <td> 0 </td>
                 <td> {{topic.created_by}} </td>
                 <td> {{topic.created_date}}</td>
