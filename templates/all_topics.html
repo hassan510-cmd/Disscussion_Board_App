@@ -28,7 +28,7 @@
                 <td><a href="{%url 'topic_page' data.id topic.id%}">{{topic.subject}}</a> </td>
 {#                 <td> {{topic.posts.all|length}} </td>#}
                  <td> {{topic.posts_num}} </td>
-                 <td> 0 </td>
+                 <td> {{ topic.views }} </td>
                 <td> {{topic.created_by}} </td>
                 <td> {{topic.created_date}}</td>
 
