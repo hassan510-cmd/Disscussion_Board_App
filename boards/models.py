@@ -52,6 +52,7 @@ class Post(models.Model):
 	created_by=models.ForeignKey(User,related_name='posts',on_delete=models.CASCADE)
 	created_date=models.DateTimeField(auto_now_add=True)
 	views = models.PositiveIntegerField(default=0)
+	edit_date=models.DateTimeField(null=True)
 
 
 class comment(models.Model):

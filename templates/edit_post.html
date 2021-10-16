@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Boards | {{ data.name }}{% endblock %}
+{% block headb %}
+    <link rel="stylesheet" href="{% static 'css/topic_posts.css' %}">
+{% endblock %}
+<html>
+{% block body %}
+    <body class="container">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include 'include/base_form.html' %}
+        <div class="p-2 mb-2   container my-4   text-center  rounded ">
+            <button type="submit" class="btn btn-success">save changes</button>
+        </div>
+    </form>
+    </body>
+{% endblock %}
+</html>

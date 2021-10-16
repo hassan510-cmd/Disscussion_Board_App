@@ -1,114 +1,135 @@
 {% extends 'base.html' %}
-{%load widget_tweaks%}
-{%load static%}
-{%block title%}Board{%endblock%}
+{% load widget_tweaks %}
+{% load static %}
+{% block title %}Board{% endblock %}
 {% block headb %}
-<link rel="stylesheet" href="{%static 'css/home.css'%}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    {#<script src="{% static 'js/bootstrap.js' %}" ></script>#}
 {% endblock %}
 
 
-{%block body%}
-<body id="bo" style="" class="container">
+{% block body %}
+    <body id="bo" style="" class="container">
 
 
+    <nav class="mb-2 navbar  navbar-dark bg-warning  rounded">
+        {#            <div id="head1" class="p-2 mb-2 bg-success  container  text-center   rounded ">#}
+        {#        <a href="{%url 'home'%}" class="text-black">Boards</a>#}
+        {#    </div>#}
+        <div class="container-fluid ">
+            <span class="text-black font-weight-bold ">Add Board</span>
+            <button class="navbar-toggler nav-link dropdown-toggle" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarScroll"
+                    aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarScroll">
+                <ul class="navbar-nav me-auto my-2 my-lg-0 " style="--bs-scroll-height: 100px;">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        {% include 'include/base_form.html' %}
+                        {#{{form.as_p}}#}
+                        <div>
+                            <button type="submit" class="btn btn-dark">add new board</button>
+                        </div>
+                    </form>
 
-    <div id="head1" class="p-2 mb-2 bg-warning  container my-4   text-center shadow  rounded ">
-        <a href="{%url 'home'%}" class="text-black">Boards</a>
-    </div>
 
-<!--<form method="post">-->
-<!--    {%csrf_token%}-->
-<!--    <div class="form-group">-->
-<!--    <input type="text" placeholder="Enter your board name" class="form-control" name="board_name">-->
-<!--    </div>-->
-<!--    <div class="form-group">-->
-<!--    <textarea name="desc"  cols="30" rows="5" placeholder="your description here" class="form-control"></textarea>-->
-<!--    </div>-->
-<!--    <button type="submit" class="btn btn-primary">add board</button>-->
-    <!--</form>-->
-    <form method="post" novalidate >
-
-        {%csrf_token%}
-        {%include 'include/base_form.html'%}
-        {#{{form.as_p}}#}
-        <div>
-             <button type="submit" class="btn btn-dark">add new board</button>
+                </ul>
+            </div>
         </div>
-    </form>
+    </nav>
+    <div class="collapse" id="navbarToggleExternalContent">
+        <div class="bg-dark p-4">
+            <h5 class="text-white h4">Collapsed content</h5>
+            <span class="text-muted">Toggleable via the navbar brand.</span>
+        </div>
+    </div>
 
     <table class="table table-hover shadow rounded align-middle ">
         <thead class="table-light" style="text-align: left">
         <tr>
-        <th>
-            #
-        </th>
-        <th>
-            Board Name
-        </th>
+            <th>
+                #
+            </th>
+            <th>
+                Board Name
+            </th>
 
-        <th>
-           # of Topics
-        </th>
-        <th>
-            last Topic Date
-        </th>
+            <th>
+                # of Topics
+            </th>
+            <th>
+                last Topic Date
+            </th>
 
-        <th>
-           # of Posts
-        </th>
-        <th>
+            <th>
+                # of Posts
+            </th>
+            <th>
 
-            last Post Date
+                last Post Date
 
-        </th>
-        <th>
+            </th>
+            <th>
 
-            Delete Topic
-            <!--            <button type="button" class="btn btn-outline-danger">-->
-            <!--                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">-->
-            <!--  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>-->
-            <!--  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>-->
-            <!--</svg>-->
-            <!--                Delete-->
-            <!--              </button>-->
-        </th>
-    </tr>
-        </thead>
-        {%for board  in data%}
-        <tr >
-            <th >{{board.id}}</th>
-
-            <td >
-            <a href="{% url 'topics' board.id%}" title="{{board.description}}">{{board.name}}</a>
-<!--            <small class="text-muted d-block">{{board.description}}</small>-->
-            </td>
-
-            <td>{{board.topics.all|length}}</td>
-
-            {#{{forloop.counter}}#}
-            <td>{{board.get_last_topic_date}}</td>
-
-            <td>{{board.count_posts}}</td>
-
-            <td >{{board.get_last_post_date}}</td>
-
-            <td >
-                <button type="button" class="btn btn-outline-danger">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
-                      <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
-                    </svg>
-                Delete
-              </button>
-            </td>
+                Delete Topic
+                <!--            <button type="button" class="btn btn-outline-danger">-->
+                <!--                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">-->
+                <!--  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>-->
+                <!--  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>-->
+                <!--</svg>-->
+                <!--                Delete-->
+                <!--              </button>-->
+            </th>
         </tr>
-    {%endfor%}
+        </thead>
+        {% for board  in data %}
+            <tr>
+                <th>{{ board.id }}</th>
+                <td>
+                    <a href="{% url 'topics' board.id %}" title="{{ board.description }}">{{ board.name }}</a>
+                    <!--            <small class="text-muted d-block">{{board.description}}</small>-->
+                </td>
+                <td>{{ board.topics.all|length }}</td>
+                {#{{forloop.counter}}#}
+                <td>{{ board.get_last_topic_date }}</td>
+                <td>{{ board.count_posts }}</td>
+                <td>{{ board.get_last_post_date }}</td>
+                <td>
+                    <button type="button" class="btn btn-outline-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                            <path fill-rule="evenodd"
+                                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                        </svg>
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
     </table>
 
-    {%for board in data%}
-        <h1>{{board.name}}</h1>
-        <h3>{{board.description}}</h3>
-    {%endfor%}
+    <ul class="pagination">
+        <li class="page-item">
+            <a href="?page={{ previous_page_number }}" class="page-link">previous</a>
+        </li>
+        {% for number in pages_number %}
+            {% if number == current_page_number %}
+                <li class="page-item active">
+                    <a href="?page={{ number }}" class="page-link">{{ number }}</a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="?page={{ number }}" class="page-link">{{ number }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
 
-</body>
-{%endblock%}
+        <a href="?page={{ next_page_number }}" class="page-link">next</a>
+    </ul>
+    </body>
+{% endblock %}

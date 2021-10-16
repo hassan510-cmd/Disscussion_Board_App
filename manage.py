@@ -82,3 +82,12 @@ if __name__ == '__main__':
 # res
 # for r in res :
 #     print(r.co)
+
+from django.core.paginator import Paginator
+from boards.models import Board
+data=Board.get_all_boards()
+paginator=Paginator(data,5)
+# paginator.count # return number of boards
+# paginator.get_page(1).has_next()
+# paginator.get_page(1).has_previous()
+paginator.num_pages
