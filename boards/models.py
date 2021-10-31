@@ -32,12 +32,19 @@ class Board(models.Model):
 	def get_all_boards():
 		return Board.objects.all().order_by(f"-id")
 
+	def __str__(self):
+		return self.name
 class Topic(models.Model):
 	subject= models.CharField(max_length=500)
 	board= models.ForeignKey(Board,related_name='topics',on_delete=models.CASCADE)
 	created_by= models.ForeignKey(User,related_name='topics',on_delete=models.CASCADE)
 	created_date= models.DateTimeField(auto_now_add=True)
 	views = models.PositiveIntegerField(default=0)
+
+	def __str__(self):
+		return self.subject
+
+
 
 	# def count_topic_posts(self):
 	# 	topic = Topic.objects.filter(board=1).order_by('-created_date')
